@@ -59,9 +59,30 @@ def gen_raw(scene_n, data_dir, tof_cam, func):
 	meas = meas / (meas.max() - meas.min())
 	meas = meas * 255
 	meas = meas.astype(np.uint8)
-	for i in range(8):cv2.imwrite(save_dir+str(i)+'.png', meas[:,:,i])  
+	for i in range(8):
+		cv2.imwrite(save_dir+str(i)+'.png', meas[:,:,i])
 
 	return
+
+
+def gen_gt(scene_n, data_dir, tof_cam):
+	print('Processing ground truth scene', scene_n)
+
+	# check if the file already exists
+	goal_dir = data_dir+'gt/'
+	if not os.path.isfile(goal_dir+scene_n[-23:-7]):
+		with open(scene_n,'rb') as f:
+			data = pickle.load(f)
+
+		# save the ground truth
+		depth_true = data['depth_true']
+		depth_true = np.reshape(depth_true,-1).astype(np.float32)
+		if not os.path.exists(goal_dir):
+			os.makedirs(goal_dir)
+		depth_true.tofile(goal_dir+scene_n[-23:-7])
+
+	return
+
 
 def gen_dataset(setup):
 	"""
@@ -134,3 +155,4 @@ def gen_dataset(setup):
 
 if __name__ == '__main__':
 	gen_dataset('phasor')
+

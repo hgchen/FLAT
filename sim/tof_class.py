@@ -2010,13 +2010,14 @@ class phasor(kinect_real_tf):
 
 		# load the camera function
 		# camera function
-		cam['T'] 		= np.array([940.7, 967.1]) # the period T = 1/frequency, the unit is 10^-12 sec
+		cam['T'] 		= np.array([10000.0, 9000.0]) # the period T = 1/frequency, the unit is 10^-12 sec
 		cam['phase'] 	= -np.array([\
 			[0*PI, 1/2*PI, PI, 3/2*PI],
 			[0*PI, 1/2*PI, PI, 3/2*PI]
 		])										# the phase delay of each raw measurement
 		cam['A'] = np.array([1824,1824])		# the amplitude of the sinusoidal, 1824 is the same as the kinect
-		cam['amb']	= np.array([0,0])			# ambient light amplitude
+		cam['amb'] = np.array([200, 200])
+		# cam['amb']	= np.array([0, 0])			# ambient light amplitude
 		self.cam = cam
 
 		# response graph
@@ -2253,6 +2254,18 @@ class phasor(kinect_real_tf):
 
 		result = {
 			'meas'	: meas
+		}
+		return result
+
+	def no_process_true_depth(self, cam, depth_true):
+
+		meas = depth_true
+
+		# deprecate the invalid part
+		meas[np.where(np.isnan(meas))] = 0
+
+		result = {
+			'meas': meas
 		}
 		return result
 
