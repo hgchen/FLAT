@@ -54,6 +54,7 @@ def gen_raw(scene_n, data_dir, tof_cam, func):
 	meas = res['meas']
 
 	if meas.ndim == 2:
+		os.mkdir(save_dir)
 		meas = scipy.misc.imresize(meas, (cam['dimy'], cam['dimx']), mode='F')
 		np.save(save_dir+'true_depth.npy', meas)
 	else:
