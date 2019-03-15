@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="hgc@192.168.50.250:22">
+    <serverData>
+      <paths name="hgc@192.168.50.250:22">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/hgc/code/FLAT" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

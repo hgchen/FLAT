@@ -53,33 +53,19 @@ def gen_raw(scene_n, data_dir, tof_cam, func):
 	res = func(cam, prop_idx, prop_s, scene, depth_true)
 	meas = res['meas']
 
-	# reshaping the images
-	os.mkdir(save_dir)
-	meas = meas - meas.min()
-	meas = meas / (meas.max() - meas.min())
-	meas = meas * 255
-	meas = meas.astype(np.uint8)
-	for i in range(8):
-		cv2.imwrite(save_dir+str(i)+'.png', meas[:,:,i])
+	if meas.ndim == 2:
+		meas = scipy.misc.imresize(meas, (cam['dimy'], cam['dimx']), mode='F')
+		np.save(save_dir+'true_depth.npy', meas)
+	else:
+		# reshaping the images
+		os.mkdir(save_dir)
+		meas = meas - meas.min()
+		meas = meas / (meas.max() - meas.min())
+		meas = meas * 4096
+		meas = meas.astype(np.uint16)
 
-	return
-
-
-def gen_gt(scene_n, data_dir, tof_cam):
-	print('Processing ground truth scene', scene_n)
-
-	# check if the file already exists
-	goal_dir = data_dir+'gt/'
-	if not os.path.isfile(goal_dir+scene_n[-23:-7]):
-		with open(scene_n,'rb') as f:
-			data = pickle.load(f)
-
-		# save the ground truth
-		depth_true = data['depth_true']
-		depth_true = np.reshape(depth_true,-1).astype(np.float32)
-		if not os.path.exists(goal_dir):
-			os.makedirs(goal_dir)
-		depth_true.tofile(goal_dir+scene_n[-23:-7])
+		for i in range(8):
+			cv2.imwrite(save_dir+str(i)+'.png', meas[:,:,i])
 
 	return
 
@@ -91,6 +77,7 @@ def gen_dataset(setup):
 	data_dir = '../FLAT/trans_render/static/'
 	save_dir = '../FLAT/'+setup + '/'
 	sub_dirs = [
+		'true_depth/', # true depth
 		'full/',   # raw measurements with both noise and reflection
 		'noise/',  # raw measurements with only noise
 		'reflection/',  # raw measurements with only reflection
@@ -110,6 +97,7 @@ def gen_dataset(setup):
 	tof_cam = eval(setup+'()')
 
 	funcs = [\
+		tof_cam.no_process_true_depth,
 		tof_cam.process_gain_noise, 
 		tof_cam.process_gt_gain_noise,
 		tof_cam.process_gain,
