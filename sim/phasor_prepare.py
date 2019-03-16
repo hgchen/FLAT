@@ -78,11 +78,11 @@ def gen_dataset(setup):
 	data_dir = '../FLAT/trans_render/static/'
 	save_dir = '../FLAT/'+setup + '/'
 	sub_dirs = [
-		'true_depth/', # true depth
 		'full/',   # raw measurements with both noise and reflection
 		'noise/',  # raw measurements with only noise
 		'reflection/',  # raw measurements with only reflection
-		'ideal/' # raw measurements with no noise nor reflection
+		'ideal/', # raw measurements with no noise nor reflection
+		'true_depth/'  # true depth
 	]
 
 	if not os.path.exists(data_dir):
@@ -98,11 +98,11 @@ def gen_dataset(setup):
 	tof_cam = eval(setup+'()')
 
 	funcs = [\
-		tof_cam.no_process_true_depth,
 		tof_cam.process_gain_noise, 
 		tof_cam.process_gt_gain_noise,
 		tof_cam.process_gain,
 		tof_cam.process_gt_gain,
+		tof_cam.no_process_true_depth
 	]
 
 	"""
