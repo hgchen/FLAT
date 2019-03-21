@@ -2004,6 +2004,8 @@ class phasor(kinect_real_tf):
         # camera dict
         cam['dimx'] = 512
         cam['dimy'] = 424
+        # cam['dimx'] = 2048
+        # cam['dimy'] = 1696
         cam['fov_x'] = 70
 
         # gains
@@ -2019,7 +2021,7 @@ class phasor(kinect_real_tf):
 
         # load the camera function
         # camera function
-        cam['T'] = np.array([10000.0, 9000.0])  # the period T = 1/frequency, the unit is 10^-12 sec
+        cam['T'] = np.array([11111.1111, 10000.0])  # [90 Mhz, 100 Mhz]the period T = 1/frequency, the unit is 10^-12 sec
         cam['phase'] = -np.array([ \
             [0 * PI, 1 / 2 * PI, PI, 3 / 2 * PI],
             [0 * PI, 1 / 2 * PI, PI, 3 / 2 * PI]

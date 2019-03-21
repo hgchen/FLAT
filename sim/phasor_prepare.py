@@ -22,10 +22,14 @@ from joblib import Parallel, delayed
 import multiprocessing
 import scipy.sparse as sp
 from tqdm import tqdm
-
 from tensorflow.contrib import learn
 from tensorflow.contrib.learn.python.learn.estimators import model_fn as model_fn_lib
 tf.logging.set_verbosity(tf.logging.INFO)
+
+def gen_raw_wrapper(i, j, scenes, scenes_finished, save_dir, sub_dir, tof_cam, funcs):
+	if (scenes[i][-23:-7] not in scenes_finished):
+		gen_raw(scenes[i], save_dir + sub_dir, tof_cam, funcs[j])
+		# print('Processing scene '+ str(i), end="", flush=True)
 
 def gen_raw(scene_n, data_dir, tof_cam, func):
 	print('Processing scene', scene_n)
@@ -118,8 +122,8 @@ def gen_dataset(setup):
 		scenes_finished = glob.glob(save_dir+sub_dir+'*')
 		scenes_finished = [scene[-16::] for scene in scenes_finished]
 
-		# Parallel(n_jobs=3)(delayed(gen_raw)(scenes[i], save_dir+sub_dir, tof_cam, funcs[j]) for i in range(len(scenes)))
-
+		# Parallel(n_jobs=3)(delayed(gen_raw_wrapper)(i, j, scenes, scenes_finished, save_dir, sub_dir, tof_cam, funcs) for i in range(len(scenes)))
+		#
 		for i in tqdm(range(len(scenes))):
 			if (scenes[i][-23:-7] not in scenes_finished):
 				gen_raw(scenes[i], save_dir+sub_dir, tof_cam, funcs[j])
